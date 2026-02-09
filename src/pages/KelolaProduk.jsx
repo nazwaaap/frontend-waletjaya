@@ -71,44 +71,33 @@ export default function KelolaProduk() {
   };
 
   if (accessDenied) {
-    return (
-      <div className="min-h-screen bg-gray-50 font-poppins">
-        <div className="bg-navy text-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
-            <div className="flex items-center gap-3 sm:gap-4">
-              <button onClick={() => navigate("/dashboard")} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
-                <ArrowLeft className="w-5 h-5" />
-              </button>
-              <div className="flex-1 min-w-0">
-                <h1 className="text-lg sm:text-xl font-bold truncate">Kelola Produk</h1>
-                <p className="text-xs text-white/70 truncate">Manajemen produk sarang burung walet</p>
-              </div>
-            </div>
+  return (
+    <div className="min-h-screen bg-gray-50 font-poppins flex items-center justify-center p-4">
+      <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
+        <div className="flex justify-center mb-4">
+          <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center">
+            <ShieldAlert className="w-12 h-12 text-red-600" />
           </div>
         </div>
+        
+        <h2 className="text-3xl font-bold text-navy mb-4">
+          Akses Ditolak
+        </h2>
+        
+        <p className="text-base text-gray-600 mb-5">
+          Halaman ini hanya dapat diakses oleh Owner!
+        </p>
 
-        <div className="flex items-center justify-center p-8">
-          <div className="bg-white rounded-xl shadow-lg p-6 max-w-sm w-full text-center">
-            <div className="flex justify-center mb-4">
-              <div className="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center">
-                <ShieldAlert className="w-7 h-7 text-red-600" />
-              </div>
-            </div>
-            <h2 className="text-lg font-bold text-navy mb-2">Akses Ditolak</h2>
-            <p className="text-sm text-gray-600 mb-5">
-              Halaman ini hanya dapat diakses oleh <span className="font-semibold text-yellow-600">Owner</span>.
-            </p>
-            <button
-              onClick={() => navigate("/dashboard")}
-              className="w-full px-5 py-2 bg-navy text-white rounded-lg hover:bg-navySoft transition-colors font-medium text-sm"
-            >
-              Kembali ke Dashboard
-            </button>
-          </div>
-        </div>
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="w-full px-6 py-2.5 bg-navy text-white rounded-lg hover:bg-navySoft transition-colors font-medium"
+        >
+          Kembali ke Dashboard
+        </button>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   return (
     <div className="min-h-screen bg-gray-50 font-poppins">
