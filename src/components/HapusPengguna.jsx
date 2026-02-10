@@ -63,6 +63,7 @@ export default function HapusPengguna() {
         return;
       }
 
+      alert(`Pengguna "${user.fullName || user.name}" berhasil dihapus!`);
       navigate("/kelola-pengguna");
     } catch (err) {
       setError("Backend tidak dapat diakses");
@@ -70,7 +71,6 @@ export default function HapusPengguna() {
     }
   };
 
-  // LOADING STATE
   if (loadingData) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -79,7 +79,6 @@ export default function HapusPengguna() {
     );
   }
 
-  // USER NOT FOUND
   if (!user) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -99,8 +98,8 @@ export default function HapusPengguna() {
   return (
     <div className="min-h-screen bg-gray-50 font-poppins">
       
-      {/* HEADER */}
-      <div className="bg-navy text-white">
+      {/* FIXED HEADER */}
+      <div className="fixed top-0 left-0 right-0 bg-navy text-white z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
           <div className="flex items-center gap-3 sm:gap-4">
             <button
@@ -111,81 +110,79 @@ export default function HapusPengguna() {
             </button>
             <div className="flex-1 min-w-0">
               <h1 className="text-lg sm:text-xl font-bold truncate">Hapus Pengguna</h1>
-              <p className="text-xs text-white/70 truncate">Konfirmasi penghapusan data pengguna</p>
+              <p className="text-xs text-white/70 truncate">Konfirmasi penghapusan data pengguna walet jaya</p>
             </div>
             <AlertTriangle className="w-6 h-6 text-red-400 hidden sm:block" />
           </div>
         </div>
       </div>
 
-      <div className="max-w-lg mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-        <div className="bg-white rounded-lg shadow-sm p-5 sm:p-7">
-          
-          {/* WARNING ICON */}
-          <div className="flex justify-center mb-2">
-            <AlertTriangle className="w-26 h-26 sm:w-28 sm:h-28 text-red-600" />
-          </div>
-
-          {/* TITLE */}
-          <div className="text-center mb-4">
-            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1">
-              Yakin ingin menghapus pengguna ini?
-            </h3>
-            <p className="text-sm text-red-600">
-              Data yang dihapus tidak dapat dikembalikan
-            </p>
-          </div>
-
-          {/* USER INFO */}
-          <div className="flex flex-col items-center mb-3">
-            <div className="w-4 h-4 sm:w-6 sm:h-6 rounded-full bg-navy text-white flex items-center justify-center font-bold text-lg sm:text-xl mb-2">
-              {(user.fullName || user.name || "?").charAt(0).toUpperCase()}
+      <div className="pt-16 sm:pt-20">
+        <div className="max-w-lg mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+          <div className="bg-white rounded-lg shadow-sm p-5 sm:p-7">
+            
+            <div className="flex justify-center mb-2">
+              <AlertTriangle className="w-20 h-20 sm:w-24 sm:h-24 text-red-600" />
             </div>
-            <h4 className="text-sm sm:text-base font-semibold text-gray-900 text-center">
-              {user.fullName || user.name}
-            </h4>
-            <p className="text-xs sm:text-sm text-gray-600 mt-0.5 text-center truncate max-w-full px-4">
-              {user.email || "-"}
-            </p>
-            <span
-              className={`inline-block mt-2 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-semibold ${
-                user.role === "owner"
-                  ? "bg-yellow-100 text-yellow-800"
-                  : "bg-blue-100 text-blue-800"
-              }`}
-            >
-              {user.role === "owner" ? "Owner" : "Admin"}
-            </span>
-          </div>
 
-          {/* ERROR MESSAGE */}
-          {error && (
-            <div className="mb-3 p-2.5 sm:p-3 bg-red-50 border border-red-200 rounded-md text-xs sm:text-sm text-red-600 text-center">
-              {error}
+            <div className="text-center mb-4">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1">
+                Yakin ingin menghapus pengguna ini?
+              </h3>
+              <p className="text-sm text-red-600">
+                Data yang dihapus tidak dapat dikembalikan
+              </p>
             </div>
-          )}
 
-          {/* ACTION BUTTONS */}
-          <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
-            <button
-              type="button"
-              onClick={() => navigate("/kelola-pengguna")}
-              className="w-full sm:flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors"
-            >
-              Batal
-            </button>
-            <button
-              onClick={handleHapus}
-              disabled={loading || user.role === "owner"}
-              className={`w-full sm:flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-semibold text-white transition-colors ${
-                loading || user.role === "owner"
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-red-600 hover:bg-red-700"
-              }`}
-            >
-              <Trash2 className="w-4 h-4" />
-              <span>{loading ? "Menghapus..." : "Hapus"}</span>
-            </button>
+            {/* USER INFO */}
+            <div className="flex flex-col items-center mb-3">
+              <div className="w-16 h-16 sm:w-10 sm:h-10 rounded-full bg-navy text-white flex items-center justify-center font-bold text-lg sm:text-xl mb-2">
+                {(user.fullName || user.name || "?").charAt(0).toUpperCase()}
+              </div>
+              <h4 className="text-sm sm:text-base font-semibold text-gray-900 text-center">
+                {user.fullName || user.name}
+              </h4>
+              <p className="text-xs sm:text-sm text-gray-600 mt-0.5 text-center truncate max-w-full px-4">
+                {user.email || "-"}
+              </p>
+              <span
+                className={`inline-block mt-2 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-semibold ${
+                  user.role === "owner"
+                    ? "bg-yellow-100 text-yellow-800"
+                    : "bg-blue-100 text-blue-800"
+                }`}
+              >
+                {user.role === "owner" ? "Owner" : "Admin"}
+              </span>
+            </div>
+
+            {error && (
+              <div className="mb-3 p-2.5 sm:p-3 bg-red-50 border border-red-200 rounded-md text-xs sm:text-sm text-red-600 text-center">
+                {error}
+              </div>
+            )}
+
+            <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
+              <button
+                type="button"
+                onClick={() => navigate("/kelola-pengguna")}
+                className="w-full sm:flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleHapus}
+                disabled={loading || user.role === "owner"}
+                className={`w-full sm:flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-semibold text-white transition-colors ${
+                  loading || user.role === "owner"
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-red-600 hover:bg-red-700"
+                }`}
+              >
+                <Trash2 className="w-4 h-4" />
+                <span>{loading ? "Menghapus..." : "Hapus"}</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
