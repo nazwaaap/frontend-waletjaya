@@ -39,14 +39,22 @@ export default function KelolaPengguna() {
   };
 
   const filteredUsers = users.filter((u) => {
-    const searchLower = searchTerm.toLowerCase();
+    if (!searchTerm || !searchTerm.trim()) return true;
+    
+    const searchLower = searchTerm.trim().toLowerCase();
     const fullName = (u.fullName || "").toLowerCase();
     const name = (u.name || "").toLowerCase();
     const email = (u.email || "").toLowerCase();
+    const role = (u.role || "").toLowerCase();
     
-    return fullName.includes(searchLower) || 
+    // Gabungkan semua field menjadi satu string untuk pencarian yang lebih fleksibel
+    const combinedText = `${fullName} ${name} ${email} ${role}`;
+    
+    return combinedText.includes(searchLower) || 
+           fullName.includes(searchLower) || 
            name.includes(searchLower) || 
-           email.includes(searchLower);
+           email.includes(searchLower) ||
+           role.includes(searchLower);
   });
 
   if (accessDenied) {
@@ -108,22 +116,23 @@ export default function KelolaPengguna() {
         </div>
       </div>
 
-      <div className="fixed left-0 right-0 z-30 bg-white border-b border-gray-200 shadow-sm top-[76px] sm:top-[84px]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 space-y-0">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Cari nama atau email..."
-              className="w-full pl-10 pr-4 py-2 border rounded-md text-sm focus:ring-2 focus:ring-navy outline-none"
-            />
-          </div>
-        </div>
-      </div>
+      <div className="pt-[76px] sm:pt-[84px]">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4 space-y-3 sm:space-y-4">
 
-      <div className="pt-[137px] sm:pt-[149px]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-6 sm:pt-6 sm:pb-8">
+          {/* SEARCH BAR - TIDAK FIXED, UKURAN SAMA DENGAN HALAMAN LAIN */}
+          <div className="bg-white rounded-lg shadow-sm p-2.5 sm:p-3">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
+              <input
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Cari nama atau email..."
+                className="w-full pl-9 pr-3 py-1.5 border rounded-md text-xs focus:ring-2 focus:ring-navy outline-none"
+              />
+            </div>
+          </div>
+
+          {/* TABLE */}
           <div className="bg-white rounded-lg shadow-sm overflow-hidden">
             {loading ? (
               <div className="py-10 text-center text-sm text-gray-500">
@@ -266,6 +275,7 @@ export default function KelolaPengguna() {
               </>
             )}
           </div>
+
         </div>
       </div>
     </div>
