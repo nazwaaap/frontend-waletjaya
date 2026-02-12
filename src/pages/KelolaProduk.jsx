@@ -96,7 +96,6 @@ export default function KelolaProduk() {
         const asal = (product.asalProduk || '').toLowerCase();
         const status = (product.status || '').toLowerCase();
         
-        // Konversi angka ke string untuk pencarian
         const modalPerGram = String(product.modalPerGram || '');
         const stokTersedia = String(product.stokTersediaGram || '');
         const beratBersih = String(product.beratBersihGram || '');
@@ -104,7 +103,6 @@ export default function KelolaProduk() {
         const totalModal = String(product.totalModalProduk || '');
         const ongkos = String(product.ongkosTotal || '');
         
-        // Gabungkan semua field menjadi satu string untuk pencarian yang lebih fleksibel
         const combinedText = `${jenis} ${supplier} ${asal} ${status} ${modalPerGram} ${stokTersedia} ${beratBersih} ${beratSusut} ${totalModal} ${ongkos}`;
         
         return combinedText.includes(search) ||
@@ -178,8 +176,6 @@ export default function KelolaProduk() {
 
       <div className="pt-[76px] sm:pt-[84px]">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4 space-y-3 sm:space-y-4">
-
-          {/* FILTERS - TIDAK FIXED, UKURAN SAMA DENGAN TRANSAKSI PENJUALAN */}
           <div className="bg-white rounded-lg shadow-sm p-2.5 sm:p-3 space-y-2">
             <div className="relative">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
@@ -242,7 +238,6 @@ export default function KelolaProduk() {
             </div>
           </div>
 
-          {/* TABLE */}
           <div className="bg-white rounded-lg shadow-sm overflow-hidden">
             {loading ? (
               <div className="py-10 text-center text-sm text-gray-500">Memuat data produk...</div>
@@ -253,7 +248,7 @@ export default function KelolaProduk() {
               </div>
             ) : (
               <>
-                {/* Desktop Table */}
+                {/* DESKTOP TABLE */}
                 <div className="hidden lg:block overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead className="bg-navy text-white">
@@ -326,7 +321,7 @@ export default function KelolaProduk() {
                   </table>
                 </div>
 
-                {/* Mobile Cards */}
+                {/* MOBILE CARDS */}
                 <div className="lg:hidden divide-y">
                   {filteredProducts.map((product, i) => (
                     <div key={product._id} className="p-4 hover:bg-gray-50 transition-colors">

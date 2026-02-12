@@ -47,7 +47,6 @@ export default function KelolaPengguna() {
     const email = (u.email || "").toLowerCase();
     const role = (u.role || "").toLowerCase();
     
-    // Gabungkan semua field menjadi satu string untuk pencarian yang lebih fleksibel
     const combinedText = `${fullName} ${name} ${email} ${role}`;
     
     return combinedText.includes(searchLower) || 
@@ -118,8 +117,6 @@ export default function KelolaPengguna() {
 
       <div className="pt-[76px] sm:pt-[84px]">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4 space-y-3 sm:space-y-4">
-
-          {/* SEARCH BAR - TIDAK FIXED, UKURAN SAMA DENGAN HALAMAN LAIN */}
           <div className="bg-white rounded-lg shadow-sm p-2.5 sm:p-3">
             <div className="relative">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" />
@@ -132,7 +129,6 @@ export default function KelolaPengguna() {
             </div>
           </div>
 
-          {/* TABLE */}
           <div className="bg-white rounded-lg shadow-sm overflow-hidden">
             {loading ? (
               <div className="py-10 text-center text-sm text-gray-500">
