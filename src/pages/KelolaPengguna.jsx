@@ -80,13 +80,13 @@ export default function KelolaPengguna() {
 
   return (
     <div className="min-h-screen bg-gray-50 font-poppins">
-       {/* FIXED HEADER */}
-      <div className="fixed top-0 left-0 right-0 bg-navy text-white z-50">
+      {/* FIXED HEADER */}
+      <div className="fixed top-0 left-0 right-0 z-40 bg-navy text-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <button 
               onClick={() => navigate("/dashboard")} 
-              className="self-start p-2 hover:bg-white/10 rounded-lg transition-colors"
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors flex-shrink-0"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
@@ -98,33 +98,32 @@ export default function KelolaPengguna() {
             
             <button
               onClick={() => navigate("/tambah-pengguna")}
-              className="flex items-center justify-center gap-2 px-4 py-2 bg-yellow-400 text-navy rounded-lg text-sm font-semibold hover:bg-yellow-500 transition-colors w-full sm:w-auto"
+              className="flex items-center gap-1.5 px-4 py-2.5 bg-yellow-400 text-navy rounded-lg text-xs sm:text-sm font-semibold hover:bg-yellow-500 transition-colors flex-shrink-0"
             >
               <Plus className="w-4 h-4" />
-              <span className="sm:inline">Tambah Pengguna</span>
+              <span className="hidden sm:inline">Tambah Pengguna</span>
+              <span className="sm:hidden">Tambah</span>
             </button>
           </div>
         </div>
       </div>
 
-      <div className="fixed top-[68px] sm:top-[80px] left-0 right-0 bg-gray-50 z-40 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-3">
-          <div className="bg-white rounded-lg shadow-sm p-2 sm:p-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <input
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Cari nama atau email..."
-                className="w-full pl-10 pr-4 py-2 border rounded-md text-sm focus:ring-2 focus:ring-navy outline-none"
-              />
-            </div>
+      <div className="fixed left-0 right-0 z-30 bg-white border-b border-gray-200 shadow-sm top-[76px] sm:top-[84px]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 space-y-0">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Cari nama atau email..."
+              className="w-full pl-10 pr-4 py-2 border rounded-md text-sm focus:ring-2 focus:ring-navy outline-none"
+            />
           </div>
         </div>
       </div>
 
-      <div className="pt-[160px] sm:pt-[155px]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+      <div className="pt-[137px] sm:pt-[149px]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-6 sm:pt-6 sm:pb-8">
           <div className="bg-white rounded-lg shadow-sm overflow-hidden">
             {loading ? (
               <div className="py-10 text-center text-sm text-gray-500">
