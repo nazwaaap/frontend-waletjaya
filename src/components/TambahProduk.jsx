@@ -93,7 +93,6 @@ export default function TambahProduk() {
     return new Intl.NumberFormat('id-ID').format(value);
   };
 
-  // KALKULASI PREVIEW 
   const beratKotor = parseFloat(formData.beratKotorGram) || 0;
   const beratBersih = parseFloat(formData.beratBersihGram) || 0;
   const beratSusut = beratKotor - beratBersih;
@@ -234,7 +233,7 @@ export default function TambahProduk() {
 
               {/* PREVIEW SUSUT */}
               {beratKotor > 0 && beratBersih >= 0 && (
-                <div className="bg-blue-50 border border-blue-200 rounded-md p-3 space-y-2 text-sm">
+                <div className="bg-blue-50 border border-gray-300 rounded-md p-3 space-y-2 text-sm">
                   <h4 className="font-semibold text-gray-900 mb-2">Kalkulasi Otomatis</h4>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-700">Berat Susut:</span>
@@ -284,7 +283,7 @@ export default function TambahProduk() {
 
               {/* PREVIEW TOTAL MODAL */}
               {formData.hargaBeliPerGram && formData.beratKotorGram && formData.beratBersihGram && (
-                <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3 space-y-2 text-sm">
+                <div className="bg-yellow-50 border border-gray-300 rounded-md p-3 space-y-2 text-sm">
                   <h4 className="font-semibold text-gray-900 mb-2">Preview Total Modal</h4>
                   <div className="flex justify-between">
                     <span className="text-gray-700">Harga Beli Total:</span>

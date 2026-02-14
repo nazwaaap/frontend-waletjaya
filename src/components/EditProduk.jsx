@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Save, AlertCircle, Edit } from "lucide-react";
+import { ArrowLeft, Save, AlertCircle, Edit, ShieldAlert } from "lucide-react";
 
 export default function EditProduk() {
   const navigate = useNavigate();
@@ -21,7 +21,14 @@ export default function EditProduk() {
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
 
+  const userRole = localStorage.getItem("userRole");
+  const canEdit = userRole === "owner";
+
   useEffect(() => {
+    if (!canEdit) {
+      setLoadingData(false);
+      return;
+    }
     fetchProduct();
   }, [id]);
 
@@ -131,11 +138,35 @@ export default function EditProduk() {
     return new Intl.NumberFormat('id-ID').format(value);
   };
 
-  // KALKULASI
+  // Kalkulasi
   const beratKotor = parseFloat(formData.beratKotorGram) || 0;
   const beratBersih = parseFloat(formData.beratBersihGram) || 0;
   const beratSusut = beratKotor - beratBersih;
   const persenSusut = beratKotor > 0 ? (beratSusut / beratKotor) * 100 : 0;
+
+  if (!canEdit) {
+    return (
+      <div className="min-h-screen bg-gray-50 font-poppins flex items-center justify-center p-4">
+        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
+          <div className="flex justify-center mb-4">
+            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center">
+              <ShieldAlert className="w-10 h-10 text-red-600" />
+            </div>
+          </div>
+          <h2 className="text-xl font-bold text-navy mb-2">Akses Ditolak</h2>
+          <p className="text-sm text-gray-600 mb-5">
+            Hanya Owner yang dapat mengedit produk.
+          </p>
+          <button
+            onClick={() => navigate("/dashboard")}
+            className="w-full px-6 py-2.5 bg-navy text-white rounded-lg hover:bg-navySoft transition-colors font-medium text-sm"
+          >
+            Kembali ke Dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (loadingData) {
     return (
@@ -247,7 +278,7 @@ export default function EditProduk() {
 
               {/* PREVIEW SUSUT */}
               {beratKotor > 0 && beratBersih >= 0 && (
-                <div className="bg-blue-50 border border-blue-200 rounded-md p-3 space-y-2 text-sm">
+                <div className="bg-blue-50 border border-gray-300 rounded-md p-3 space-y-2 text-sm">
                   <h4 className="font-semibold text-gray-900 mb-2">Kalkulasi Otomatis</h4>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-700">Berat Susut:</span>

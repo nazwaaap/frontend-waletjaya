@@ -230,7 +230,7 @@ export default function KelolaProduk() {
                     setFilterStatus("");
                     setSearchTerm("");
                   }}
-                  className="px-2.5 py-1.5 bg-yellow-400 text-navy rounded-md text-[10px] font-semibold hover:bg-yellow-500 transition-colors whitespace-nowrap"
+                  className="px-3 py-2 bg-yellow-400 text-navy rounded-md text-[10px] font-semibold hover:bg-yellow-500 transition-colors whitespace-nowrap"
                 >
                   Reset
                 </button>
@@ -250,14 +250,14 @@ export default function KelolaProduk() {
               <>
                 {/* DESKTOP TABLE */}
                 <div className="hidden lg:block overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead className="bg-navy text-white">
+                  <table className="w-full text-xs">
+                    <thead className="bg-navy text-white text-xs">
                       <tr>
-                        <th className="px-4 py-3 text-left">No</th>
-                        <th className="px-4 py-3 text-left">Tanggal</th>
+                        <th className="px-2 py-3 text-left">No</th>
+                        <th className="px-3 py-3 text-left">Tanggal</th>
                         <th className="px-4 py-3 text-left">Jenis</th>
                         <th className="px-4 py-3 text-left">Modal/Gram</th>
-                        <th className="px-4 py-3 text-left">Berat</th>
+                        <th className="px-4 py-3 text-left">Berat Tersedia</th>
                         <th className="px-4 py-3 text-left">Susut</th>
                         <th className="px-4 py-3 text-left">Total Modal</th>
                         <th className="px-4 py-3 text-left">Supplier</th>
@@ -394,7 +394,6 @@ export default function KelolaProduk() {
               </>
             )}
           </div>
-
         </div>
       </div>
     </div>
