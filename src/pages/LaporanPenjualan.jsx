@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import { ArrowLeft, FileText, Image as ImageIcon, X } from "lucide-react";
 
-// ✅ FIX: Timezone issue - gunakan local date, bukan UTC
 const hitungRange = (mode) => {
   const now = new Date();
   let start, end;
@@ -19,7 +18,6 @@ const hitungRange = (mode) => {
     end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
   }
   
-  // ✅ FIX: Format local date tanpa convert ke UTC
   const formatLocal = (d) => {
     const y = d.getFullYear();
     const m = String(d.getMonth() + 1).padStart(2, '0');
