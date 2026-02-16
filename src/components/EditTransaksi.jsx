@@ -249,7 +249,7 @@ export default function EditTransaksi() {
                 <div className="space-y-1.5 text-xs">
                   <div className="flex justify-between items-center py-1.5 border-b border-gray-200">
                     <span className="text-gray-600">Produk:</span>
-                    <span className="font-semibold text-navy">{transaction.jenisProduk}</span>
+                    <span className="font-semibold text-navy">{transaction.jenisProduk || transaction.productSnapshot?.jenis || "-"}</span>
                   </div>
                   <div className="flex justify-between items-center py-1.5 border-b border-gray-200">
                     <span className="text-gray-600">Berat Terjual:</span>

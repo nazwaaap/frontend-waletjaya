@@ -197,7 +197,7 @@ export default function HapusTransaksi() {
                 <div className="pt-1.5 border-t">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Produk:</span>
-                    <span className="font-semibold text-navy">{transaction.jenisProduk}</span>
+                    <span className="font-semibold text-navy">{transaction.jenisProduk || transaction.productSnapshot?.jenis || "-"}</span>
                   </div>
 
                   <div className="flex justify-between items-center">
