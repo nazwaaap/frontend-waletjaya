@@ -53,7 +53,7 @@ export default function MasukAkun() {
     <div className="min-h-screen grid lg:grid-cols-2 font-poppins">
       <style>{`@keyframes slideIn{0%{opacity:0;transform:translateY(-20px)}100%{opacity:1;transform:translateY(0)}}.slide-in{animation:slideIn .8s ease-out forwards}`}</style>
       
-      {/* LEFT - Welcome Section */}
+      {/* section kiri */}
       <div className="hidden lg:flex items-center justify-center bg-navy text-white p-8">
         <div className="max-w-md text-center">
           <svg className="mx-auto mb-6" width="160" height="120" viewBox="0 0 160 120" fill="none">
@@ -80,7 +80,7 @@ export default function MasukAkun() {
         </div>
       </div>
 
-      {/* RIGHT - Login Form */}
+      {/* section kanan */}
       <div className="flex items-center justify-center p-6 sm:p-10 bg-white">
         <div className="w-full max-w-md">
           <div className="lg:hidden text-center mb-8">

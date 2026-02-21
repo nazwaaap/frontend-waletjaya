@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import Sidebar from "../components/Sidebar";
 import { ArrowLeft, AlertTriangle, Trash2 } from "lucide-react";
 
 export default function HapusPengguna() {
@@ -9,6 +10,11 @@ export default function HapusPengguna() {
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
   const [error, setError] = useState("");
+
+  const currentUser = {
+    role: localStorage.getItem("userRole"),
+    name: localStorage.getItem("userName"),
+  };
 
   useEffect(() => {
     fetchUser();
@@ -24,7 +30,7 @@ export default function HapusPengguna() {
         }
       });
       const data = await res.json();
-      
+
       if (res.ok) {
         setUser(data.data);
         if (data.data.role === "owner") {
@@ -73,115 +79,123 @@ export default function HapusPengguna() {
 
   if (loadingData) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-500 text-sm">Memuat data...</p>
+      <div className="flex h-screen bg-gray-50 font-poppins">
+        <Sidebar user={currentUser} />
+        <div className="flex-1 flex items-center justify-center">
+          <p className="text-gray-500 text-sm">Memuat data...</p>
+        </div>
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-gray-600 mb-4">Pengguna tidak ditemukan</p>
-          <button
-            onClick={() => navigate("/kelola-pengguna")}
-            className="px-4 py-2 bg-navy text-white rounded-md hover:bg-navySoft text-sm transition-colors"
-          >
-            Kembali
-          </button>
+      <div className="flex h-screen bg-gray-50 font-poppins">
+        <Sidebar user={currentUser} />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-gray-600 mb-4">Pengguna tidak ditemukan</p>
+            <button
+              onClick={() => navigate("/kelola-pengguna")}
+              className="px-4 py-2 bg-navy text-white rounded-md hover:bg-navySoft text-sm transition-colors"
+            >
+              Kembali
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 font-poppins">
-      
-      {/* FIXED HEADER */}
-      <div className="fixed top-0 left-0 right-0 bg-navy text-white z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
-          <div className="flex items-center gap-3 sm:gap-4">
-            <button
-              onClick={() => navigate("/kelola-pengguna")}
-              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-            <div className="flex-1 min-w-0">
-              <h1 className="text-lg sm:text-xl font-bold truncate">Hapus Pengguna</h1>
-              <p className="text-xs text-white/70 truncate">Konfirmasi penghapusan data pengguna walet jaya</p>
+    <div className="flex h-screen bg-gray-50 font-poppins">
+      <Sidebar user={currentUser} />
+
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="bg-white border-b border-gray-200 shadow-sm">
+          <div className="px-4 py-3">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => navigate("/kelola-pengguna")}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <ArrowLeft className="w-5 h-5 text-gray-700" />
+              </button>
+              <div className="flex-1 min-w-0">
+                <h1 className="text-base font-bold text-navy">Hapus Pengguna</h1>
+                <p className="text-[10px] text-gray-500">Konfirmasi penghapusan data pengguna walet jaya</p>
+              </div>
+              <AlertTriangle className="w-5 h-5 text-red-500 hidden sm:block" />
             </div>
-            <AlertTriangle className="w-6 h-6 text-red-400 hidden sm:block" />
           </div>
         </div>
-      </div>
 
-      <div className="pt-16 sm:pt-20">
-        <div className="max-w-lg mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
-          <div className="bg-white rounded-lg shadow-sm p-5 sm:p-7">
-            
-            <div className="flex justify-center mb-2">
-              <AlertTriangle className="w-20 h-20 sm:w-24 sm:h-24 text-red-600" />
-            </div>
+        <div className="flex-1 overflow-y-auto">
+          <div className="max-w-lg mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+            <div className="bg-white rounded-lg shadow-sm p-5 sm:p-7">
 
-            <div className="text-center mb-4">
-              <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1">
-                Yakin ingin menghapus pengguna ini?
-              </h3>
-              <p className="text-sm text-red-600">
-                Data yang dihapus tidak dapat dikembalikan
-              </p>
-            </div>
-
-            {/* USER INFO */}
-            <div className="flex flex-col items-center mb-3">
-              <div className="w-16 h-16 sm:w-10 sm:h-10 rounded-full bg-navy text-white flex items-center justify-center font-bold text-lg sm:text-xl mb-2">
-                {(user.fullName || user.name || "?").charAt(0).toUpperCase()}
+              <div className="flex justify-center mb-2">
+                <AlertTriangle className="w-20 h-20 sm:w-24 sm:h-24 text-red-600" />
               </div>
-              <h4 className="text-sm sm:text-base font-semibold text-gray-900 text-center">
-                {user.fullName || user.name}
-              </h4>
-              <p className="text-xs sm:text-sm text-gray-600 mt-0.5 text-center truncate max-w-full px-4">
-                {user.email || "-"}
-              </p>
-              <span
-                className={`inline-block mt-2 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-semibold ${
-                  user.role === "owner"
-                    ? "bg-yellow-100 text-yellow-800"
-                    : "bg-blue-100 text-blue-800"
-                }`}
-              >
-                {user.role === "owner" ? "Owner" : "Admin"}
-              </span>
-            </div>
 
-            {error && (
-              <div className="mb-3 p-2.5 sm:p-3 bg-red-50 border border-red-200 rounded-md text-xs sm:text-sm text-red-600 text-center">
-                {error}
+              <div className="text-center mb-4">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1">
+                  Yakin ingin menghapus pengguna ini?
+                </h3>
+                <p className="text-sm text-red-600">
+                  Data yang dihapus tidak dapat dikembalikan
+                </p>
               </div>
-            )}
 
-            <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
-              <button
-                type="button"
-                onClick={() => navigate("/kelola-pengguna")}
-                className="w-full sm:flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors"
-              >
-                Batal
-              </button>
-              <button
-                onClick={handleHapus}
-                disabled={loading || user.role === "owner"}
-                className={`w-full sm:flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-semibold text-white transition-colors ${
-                  loading || user.role === "owner"
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-red-600 hover:bg-red-700"
-                }`}
-              >
-                <Trash2 className="w-4 h-4" />
-                <span>{loading ? "Menghapus..." : "Hapus"}</span>
-              </button>
+              {/* user info*/}
+              <div className="flex flex-col items-center mb-3">
+                <div className="w-16 h-16 sm:w-10 sm:h-10 rounded-full bg-navy text-white flex items-center justify-center font-bold text-lg sm:text-xl mb-2">
+                  {(user.fullName || user.name || "?").charAt(0).toUpperCase()}
+                </div>
+                <h4 className="text-sm sm:text-base font-semibold text-gray-900 text-center">
+                  {user.fullName || user.name}
+                </h4>
+                <p className="text-xs sm:text-sm text-gray-600 mt-0.5 text-center truncate max-w-full px-4">
+                  {user.email || "-"}
+                </p>
+                <span
+                  className={`inline-block mt-2 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs font-semibold ${
+                    user.role === "owner"
+                      ? "bg-yellow-100 text-yellow-800"
+                      : "bg-blue-100 text-blue-800"
+                  }`}
+                >
+                  {user.role === "owner" ? "Owner" : "Admin"}
+                </span>
+              </div>
+
+              {error && (
+                <div className="mb-3 p-2.5 sm:p-3 bg-red-50 border border-red-200 rounded-md text-xs sm:text-sm text-red-600 text-center">
+                  {error}
+                </div>
+              )}
+
+              <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
+                <button
+                  type="button"
+                  onClick={() => navigate("/kelola-pengguna")}
+                  className="w-full sm:flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors"
+                >
+                  Batal
+                </button>
+                <button
+                  onClick={handleHapus}
+                  disabled={loading || user.role === "owner"}
+                  className={`w-full sm:flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-semibold text-white transition-colors ${
+                    loading || user.role === "owner"
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-red-600 hover:bg-red-700"
+                  }`}
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>{loading ? "Menghapus..." : "Hapus"}</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>

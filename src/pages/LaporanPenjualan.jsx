@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
-import { ArrowLeft, FileText, Image as ImageIcon, X } from "lucide-react";
+import { ArrowLeft, FileText, Image as ImageIcon, X, AlertCircle } from "lucide-react";
 
 const hitungRange = (mode) => {
   const now = new Date();
@@ -126,41 +126,57 @@ export default function LaporanPenjualan() {
   const [filterJenis, setFilterJenis] = useState("");
   const [filterMetode, setFilterMetode] = useState("");
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [expandedNota, setExpandedNota] = useState(null);
   const [data, setData] = useState({
     summary: { totalPenjualan:0, totalModal:0, totalLaba:0, totalBerat:0, jumlahTransaksi:0, avgMargin:0 },
     transaksi: [], perProduk: []
   });
 
+  const debounceRef = useRef(null);
+
   useEffect(() => {
     const role = localStorage.getItem("userRole");
     if (role !== "owner" && role !== "admin") navigate("/dashboard");
   }, [navigate]);
 
-  useEffect(() => { if (startDate && endDate) fetchLaporan(); }, [startDate, endDate, filterJenis, filterMetode]);
+  const fetchLaporan = useCallback(async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const token = localStorage.getItem("token");
+      let url = `http://localhost:5000/api/laporan/laporan?startDate=${startDate}&endDate=${endDate}&_t=${Date.now()}`;
+      if (filterJenis) url += `&jenisProduk=${encodeURIComponent(filterJenis)}`;
+      if (filterMetode) url += `&metodePembayaran=${encodeURIComponent(filterMetode)}`;
+      const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` }, cache: 'no-cache' });
+      const json = await res.json();
+      if (res.ok) {
+        setData(json.data);
+      } else {
+        setError(json.message || "Gagal memuat data laporan");
+      }
+    } catch (err) {
+      console.error('Fetch Error:', err);
+      setError("Tidak dapat terhubung ke server. Periksa koneksi internet Anda.");
+    } finally {
+      setLoading(false);
+    }
+  }, [startDate, endDate, filterJenis, filterMetode]);
+
+  useEffect(() => {
+    if (!startDate || !endDate) return;
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      fetchLaporan();
+    }, 500);
+    return () => clearTimeout(debounceRef.current);
+  }, [startDate, endDate, filterJenis, filterMetode, fetchLaporan]);
 
   useEffect(() => {
     const handleTransaksiUpdate = () => { if (startDate && endDate) fetchLaporan(); };
     window.addEventListener('transaksiUpdated', handleTransaksiUpdate);
     return () => window.removeEventListener('transaksiUpdated', handleTransaksiUpdate);
-  }, [startDate, endDate]);
-
-  const fetchLaporan = async () => {
-    setLoading(true);
-    try {
-      const token = localStorage.getItem("token");
-      let url = `http://localhost:5000/api/transactions/laporan?startDate=${startDate}&endDate=${endDate}&_t=${Date.now()}`;
-      if (filterJenis) url += `&jenisProduk=${encodeURIComponent(filterJenis)}`;
-      if (filterMetode) url += `&metodePembayaran=${encodeURIComponent(filterMetode)}`;
-      const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` }, cache: 'no-cache' });
-      const json = await res.json();
-      if (res.ok) setData(json.data);
-    } catch (err) {
-      console.error('Fetch Error:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [startDate, endDate, fetchLaporan]);
 
   const pilihMode = (mode) => {
     const { start, end } = hitungRange(mode);
@@ -288,6 +304,24 @@ export default function LaporanPenjualan() {
 
         <div className="flex-1 overflow-y-auto">
           <div className="px-2 py-3 space-y-2">
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                <div className="flex items-start gap-2">
+                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-red-900 text-sm">Gagal Memuat Data</h3>
+                    <p className="text-xs text-red-700 mt-1">{error}</p>
+                    <button
+                      onClick={fetchLaporan}
+                      className="mt-2 px-3 py-1.5 bg-red-600 text-white rounded text-xs font-medium hover:bg-red-700 transition-colors"
+                    >
+                      Coba Lagi
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div className="bg-white rounded-lg shadow-sm p-2 space-y-2">
               <div className="flex items-center gap-1.5 flex-wrap text-[10px]">
                 <span className="text-gray-500 font-medium">Periode:</span>
@@ -403,9 +437,9 @@ export default function LaporanPenjualan() {
                               </td>
                               <td className="px-2 py-2 text-gray-700 truncate">{tx.jenisProduk || tx.productSnapshot?.jenis || "-"}</td>
                               <td className="px-2 py-2 text-right font-medium text-gray-800">{tx.beratTerjualGram}g</td>
-                              <td className="px-2 py-2 text-right text-orange-700 font-semibold">{fmt.currency(tx.totalModalTransaksi)}</td>
-                              <td className="px-2 py-2 text-right text-green-700 font-bold">{fmt.currency(tx.totalHargaJual)}</td>
-                              <td className="px-2 py-2 text-right text-blue-700 font-bold">{fmt.currency(tx.totalLaba)}</td>
+                              <td className="px-2 py-2 text-right text-gray-800 font-medium">{fmt.currency(tx.totalModalTransaksi)}</td>
+                              <td className="px-2 py-2 text-right text-gray-800 font-medium">{fmt.currency(tx.totalHargaJual)}</td>
+                              <td className="px-2 py-2 text-right text-gray-800 font-medium">{fmt.currency(tx.totalLaba)}</td>
                               <td className="px-2 py-2 text-center text-gray-600">{(tx.persenLaba||0).toFixed(0)}%</td>
                               <td className="px-2 py-2 text-center text-gray-600">{tx.metodePembayaran}</td>
                               <td className="px-2 py-2 text-center">
@@ -443,23 +477,23 @@ export default function LaporanPenjualan() {
                     <table className="w-full text-[9px]">
                       <thead>
                         <tr className="bg-gray-100 text-gray-600 font-semibold border-b">
-                          <th className="px-2 py-1.5 text-left">Produk</th>
+                          <th className="px-2 py-1.5 text-center">Produk</th>
                           <th className="px-2 py-1.5 text-center">Jml</th>
-                          <th className="px-2 py-1.5 text-right">Berat</th>
-                          <th className="px-2 py-1.5 text-right">Modal</th>
-                          <th className="px-2 py-1.5 text-right">Jual</th>
-                          <th className="px-2 py-1.5 text-right">Laba</th>
+                          <th className="px-2 py-1.5 text-center">Berat</th>
+                          <th className="px-2 py-1.5 text-center">Modal</th>
+                          <th className="px-2 py-1.5 text-center">Jual</th>
+                          <th className="px-2 py-1.5 text-center">Laba</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y">
                         {perProduk.map((p, i) => (
                           <tr key={i} className={i % 2 !== 0 ? "bg-gray-50" : "bg-white"}>
-                            <td className="px-2 py-1.5 font-medium">{p._id || "-"}</td>
+                            <td className="px-2 py-1.5 font-medium text-center">{p._id || "-"}</td>
                             <td className="px-2 py-1.5 text-center">{p.jumlahTransaksi}</td>
-                            <td className="px-2 py-1.5 text-right">{(p.totalBerat||0).toFixed(0)}g</td>
-                            <td className="px-2 py-1.5 text-right">{fmt.currency(p.totalModal)}</td>
-                            <td className="px-2 py-1.5 text-right font-semibold">{fmt.currency(p.totalPenjualan)}</td>
-                            <td className="px-2 py-1.5 text-right font-bold text-blue-700">{fmt.currency(p.totalLaba)}</td>
+                            <td className="px-2 py-1.5 text-center">{(p.totalBerat||0).toFixed(0)}g</td>
+                            <td className="px-2 py-1.5 text-center">{fmt.currency(p.totalModal)}</td>
+                            <td className="px-2 py-1.5 text-center font-semibold">{fmt.currency(p.totalPenjualan)}</td>
+                            <td className="px-2 py-1.5 text-center font-bold">{fmt.currency(p.totalLaba)}</td>
                           </tr>
                         ))}
                       </tbody>

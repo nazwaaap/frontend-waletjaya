@@ -23,15 +23,15 @@ export default function Dashboard() {
   const CHART_COLORS = { navy: '#1e293b', yellow: '#eab308', teal: '#14b8a6', orange: '#f97316', green: '#10b981', cyan: '#06b6d4', pink: '#ec4899', indigo: '#6366f1' };
 
   useEffect(() => {
-    fetchDashboardData();
     const userRole = localStorage.getItem("userRole");
     const userName = localStorage.getItem("userName");
     setUser({ role: userRole, name: userName });
+    fetchDashboardData();
   }, []);
 
   const fetchDashboardData = async () => {
     setLoading(true);
-    setError("");
+    setError(""); 
     try {
       const token = localStorage.getItem("token");
       const [productRes, transactionRes] = await Promise.all([
@@ -39,7 +39,11 @@ export default function Dashboard() {
         fetch("http://localhost:5000/api/transactions/stats/summary", { headers: { Authorization: `Bearer ${token}` }})
       ]);
 
-      if (!productRes.ok || !transactionRes.ok) throw new Error("Gagal mengambil data statistik");
+      if (!productRes.ok || !transactionRes.ok) {
+        setError("Gagal mengambil data statistik dari server"); 
+        setLoading(false);
+        return;
+      }
 
       const productData = await productRes.json();
       const transactionData = await transactionRes.json();
@@ -81,7 +85,7 @@ export default function Dashboard() {
       });
     } catch (err) {
       console.error("Error fetching dashboard data:", err);
-      setError(err.message || "Gagal memuat data dashboard");
+      setError("Tidak dapat terhubung ke server. Periksa koneksi internet Anda."); // ← SET ERROR
     } finally {
       setLoading(false);
     }
@@ -108,32 +112,20 @@ export default function Dashboard() {
     </ResponsiveContainer>
   );
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-navy mx-auto mb-3"></div>
-          <p className="text-gray-600 text-sm">Memuat dashboard...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex h-screen bg-gray-50 font-poppins text-sm">
-      <Sidebar />
+    <div className="flex h-screen bg-gray-50 font-poppins">
+      <Sidebar user={user} />
 
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="bg-white border-b border-gray-200 shadow-sm">
           <div className="px-4 py-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div>
-                  <h2 className="text-base font-bold text-navy">Dashboard</h2>
-                  <p className="text-[10px] text-gray-500">Selamat datang, {user?.name}!</p>
-                </div>
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 flex-shrink-0 md:hidden" />
+              <div className="flex-1 min-w-0">
+                <h2 className="text-base font-bold text-navy">Dashboard</h2>
+                <p className="text-[10px] text-gray-500">Selamat datang, {user?.name}!</p>
               </div>
-              <div className="hidden md:block text-[10px] text-gray-500">
+              <div className="hidden md:block text-[10px] text-gray-500 flex-shrink-0">
                 {new Date().toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
               </div>
             </div>
@@ -141,148 +133,163 @@ export default function Dashboard() {
         </header>
 
         <main className="flex-1 overflow-y-auto p-3 sm:p-4">
-          <div className="max-w-7xl mx-auto space-y-4">
-            {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-start gap-2">
-                <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
-                <div>
-                  <h3 className="font-semibold text-red-900 text-xs">Error</h3>
-                  <p className="text-xs text-red-700 mt-0.5">{error}</p>
-                </div>
-              </div>
-            )}
-
-            {/* SUMMARY CARDS */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
-              <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="p-1.5 bg-navy/10 rounded-lg">
-                    <Wallet className="w-4 h-4 text-navy" />
-                  </div>
-                </div>
-                <p className="text-[10px] text-gray-600 mb-0.5">Total Modal Usaha</p>
-                <p className="text-xl font-bold text-gray-900 mb-0.5">{formatCurrency(stats.totalModalUsaha)}</p>
-                <p className="text-[9px] text-gray-500">Modal pembelian produk</p>
-              </div>
-
-              <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="p-1.5 bg-navy/10 rounded-lg">
-                    <DollarSign className="w-4 h-4 text-navy" />
-                  </div>
-                </div>
-                <p className="text-[10px] text-gray-600 mb-0.5">Modal Terpakai</p>
-                <p className="text-xl font-bold text-gray-900 mb-0.5">{formatCurrency(stats.modalTerpakai)}</p>
-                <p className="text-[9px] text-gray-500">{stats.totalModalUsaha > 0 ? `${formatPercent((stats.modalTerpakai / stats.totalModalUsaha) * 100)}% dari total` : 'Belum ada transaksi'}</p>
-              </div>
-
-              <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="p-1.5 bg-navy/10 rounded-lg">
-                    <Boxes className="w-4 h-4 text-navy" />
-                  </div>
-                </div>
-                <p className="text-[10px] text-gray-600 mb-0.5">Modal Sisa (Stok)</p>
-                <p className="text-xl font-bold text-gray-900 mb-0.5">{formatCurrency(stats.modalSisa)}</p>
-                <p className="text-[9px] text-gray-500">{formatNumber(stats.totalStokTersedia)} gram tersedia</p>
-              </div>
-
-              <div className="bg-navy text-white rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="p-1.5 bg-white/10 rounded-lg">
-                    <TrendingUp className="w-4 h-4 text-white" />
-                  </div>
-                </div>
-                <p className="text-[10px] opacity-90 mb-0.5">Total Laba</p>
-                <p className="text-xl font-bold mb-0.5">{formatCurrency(stats.totalLaba)}</p>
-                <p className="text-[9px] opacity-75">Margin {formatPercent(stats.persenMargin)}% • {stats.totalTransaksi} transaksi</p>
+          {loading ? (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-navy mx-auto mb-3"></div>
+                <p className="text-gray-600 text-sm">Memuat dashboard...</p>
               </div>
             </div>
-
-            {/* CHARTS */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {/* LINE CHART */}
-              <div className="bg-white rounded-lg shadow-sm p-4">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <BarChart3 className="w-5 h-5 text-navy" />
-                    <h3 className="font-semibold text-navy">Tren Penjualan</h3>
-                  </div>
-                  <select value={chartPeriod} onChange={(e) => setChartPeriod(e.target.value)} className="text-xs border rounded px-2 py-1 focus:ring-2 focus:ring-navy outline-none">
-                    <option value="daily">Harian</option>
-                    <option value="monthly">Bulanan</option>
-                  </select>
-                </div>
-                {chartPeriod === "daily" && chartData.salesPerDay.length > 0 ? renderLineChart(chartData.salesPerDay)
-                  : chartPeriod === "monthly" && chartData.salesPerMonth.length > 0 ? renderLineChart(chartData.salesPerMonth)
-                  : <div className="h-[240px] flex items-center justify-center text-gray-400 text-sm"><div className="text-center"><BarChart3 className="w-12 h-12 mx-auto mb-2 text-gray-300" /><p>Belum ada data transaksi</p></div></div>
-                }
-              </div>
-
-              {/* BAR CHART */}
-              <div className="bg-white rounded-lg shadow-sm p-4">
-                <div className="flex items-center gap-2 mb-4">
-                  <BarChart3 className="w-5 h-5 text-navy" />
-                  <h3 className="font-semibold text-navy">Penjualan per Produk</h3>
-                </div>
-                {chartData.salesPerProduct.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={240}>
-                    <BarChart data={chartData.salesPerProduct} margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-                      <XAxis dataKey="jenis" style={{ fontSize: '11px' }} tick={{ fill: '#6b7280' }} />
-                      <YAxis style={{ fontSize: '11px' }} tick={{ fill: '#6b7280' }} tickFormatter={(v) => `${(v / 1000000).toFixed(0)}jt`} />
-                      <Tooltip formatter={(v) => formatCurrency(v)} contentStyle={{ fontSize: '12px', borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
-                      <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
-                      <Bar dataKey="total" fill={CHART_COLORS.navy} name="Total Penjualan" radius={[6, 6, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                ) : <div className="h-[240px] flex items-center justify-center text-gray-400 text-sm"><div className="text-center"><BarChart3 className="w-12 h-12 mx-auto mb-2 text-gray-300" /><p>Belum ada data penjualan</p></div></div>}
-              </div>
-
-              {/* PIE CHART */}
-              <div className="bg-white rounded-lg shadow-sm p-4">
-                <div className="flex items-center gap-2 mb-4">
-                  <PieChartIcon className="w-5 h-5 text-navy" />
-                  <h3 className="font-semibold text-navy">Metode Pembayaran</h3>
-                </div>
-                {chartData.metodePembayaran.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={240}>
-                    <PieChart>
-                      <Pie data={chartData.metodePembayaran} dataKey="total" nameKey="metode" cx="50%" cy="50%" outerRadius={75} label={({ metode, percent }) => `${metode} ${(percent * 100).toFixed(0)}%`} labelStyle={{ fontSize: '11px', fontWeight: '600' }}>
-                        {chartData.metodePembayaran.map((entry, index) => {
-                          const colors = [CHART_COLORS.navy, CHART_COLORS.yellow, CHART_COLORS.teal, CHART_COLORS.orange];
-                          return <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />;
-                        })}
-                      </Pie>
-                      <Tooltip formatter={(v) => formatCurrency(v)} contentStyle={{ fontSize: '12px', borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                ) : <div className="h-[240px] flex items-center justify-center text-gray-400 text-sm"><div className="text-center"><PieChartIcon className="w-12 h-12 mx-auto mb-2 text-gray-300" /><p>Belum ada data pembayaran</p></div></div>}
-              </div>
-
-              {/* STATS */}
-              <div className="bg-white rounded-lg shadow-sm p-4">
-                <div className="flex items-center gap-2 mb-4">
-                  <TrendingUp className="w-5 h-5 text-navy" />
-                  <h3 className="font-semibold text-navy">Statistik Produk</h3>
-                </div>
-                <div className="space-y-2.5">
-                  {[
-                    { label: 'Total Berat Bersih',   value: `${formatNumber(stats.totalBeratBersih)} gram` },
-                    { label: 'Berat Terjual',         value: `${formatNumber(stats.totalBeratTerjual)} gram` },
-                    { label: 'Stok Tersedia',         value: `${formatNumber(stats.totalStokTersedia)} gram` },
-                    { label: 'Persentase Terjual',    value: `${formatPercent(stats.persenTerjual)}%` },
-                    { label: 'Rata-rata Susut',       value: `${formatPercent(stats.avgPersenSusut)}%` }
-                  ].map((item, i) => (
-                    <div key={i} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-200">
-                      <span className="text-sm text-gray-600">{item.label}</span>
-                      <span className="text-sm font-bold text-navy">{item.value}</span>
+          ) : (
+            <div className="max-w-7xl mx-auto space-y-4">
+              {error && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                  <div className="flex items-start gap-2">
+                    <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-red-900 text-sm">Gagal Memuat Data</h3>
+                      <p className="text-xs text-red-700 mt-1">{error}</p>
+                      <button
+                        onClick={fetchDashboardData}
+                        className="mt-2 px-3 py-1.5 bg-red-600 text-white rounded text-xs font-medium hover:bg-red-700 transition-colors"
+                      >
+                        Coba Lagi
+                      </button>
                     </div>
-                  ))}
+                  </div>
+                </div>
+              )}
+
+              {/* SUMMARY CARDS */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="p-1.5 bg-navy/10 rounded-lg">
+                      <Wallet className="w-4 h-4 text-navy" />
+                    </div>
+                  </div>
+                  <p className="text-[10px] text-gray-600 mb-0.5">Total Modal Usaha</p>
+                  <p className="text-xl font-bold text-gray-900 mb-0.5">{formatCurrency(stats.totalModalUsaha)}</p>
+                  <p className="text-[9px] text-gray-500">Modal pembelian produk</p>
+                </div>
+
+                <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="p-1.5 bg-navy/10 rounded-lg">
+                      <DollarSign className="w-4 h-4 text-navy" />
+                    </div>
+                  </div>
+                  <p className="text-[10px] text-gray-600 mb-0.5">Modal Terpakai</p>
+                  <p className="text-xl font-bold text-gray-900 mb-0.5">{formatCurrency(stats.modalTerpakai)}</p>
+                  <p className="text-[9px] text-gray-500">{stats.totalModalUsaha > 0 ? `${formatPercent((stats.modalTerpakai / stats.totalModalUsaha) * 100)}% dari total` : 'Belum ada transaksi'}</p>
+                </div>
+
+                <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="p-1.5 bg-navy/10 rounded-lg">
+                      <Boxes className="w-4 h-4 text-navy" />
+                    </div>
+                  </div>
+                  <p className="text-[10px] text-gray-600 mb-0.5">Stok Tersedia</p>
+                  <p className="text-xl font-bold text-gray-900 mb-0.5">{formatNumber(stats.totalStokTersedia)} gram</p>
+                  <p className="text-[9px] text-gray-500">Stok produk siap jual</p>
+                </div>
+
+                <div className="bg-navy text-white rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="p-1.5 bg-white/10 rounded-lg">
+                      <TrendingUp className="w-4 h-4 text-white" />
+                    </div>
+                  </div>
+                  <p className="text-[10px] opacity-90 mb-0.5">Total Laba</p>
+                  <p className="text-xl font-bold mb-0.5">{formatCurrency(stats.totalLaba)}</p>
+                  <p className="text-[9px] opacity-75">Margin {formatPercent(stats.persenMargin)}% • {stats.totalTransaksi} transaksi</p>
+                </div>
+              </div>
+
+              {/* CHARTS */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+  
+                <div className="bg-white rounded-lg shadow-sm p-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <BarChart3 className="w-5 h-5 text-navy" />
+                      <h3 className="font-semibold text-navy">Tren Penjualan</h3>
+                    </div>
+                    <select value={chartPeriod} onChange={(e) => setChartPeriod(e.target.value)} className="text-xs border rounded px-2 py-1 focus:ring-2 focus:ring-navy outline-none">
+                      <option value="daily">Harian</option>
+                      <option value="monthly">Bulanan</option>
+                    </select>
+                  </div>
+                  {chartPeriod === "daily" && chartData.salesPerDay.length > 0 ? renderLineChart(chartData.salesPerDay)
+                    : chartPeriod === "monthly" && chartData.salesPerMonth.length > 0 ? renderLineChart(chartData.salesPerMonth)
+                    : <div className="h-[240px] flex items-center justify-center text-gray-400 text-sm"><div className="text-center"><BarChart3 className="w-12 h-12 mx-auto mb-2 text-gray-300" /><p>Belum ada data transaksi</p></div></div>
+                  }
+                </div>
+
+                <div className="bg-white rounded-lg shadow-sm p-4">
+                  <div className="flex items-center gap-2 mb-4">
+                    <BarChart3 className="w-5 h-5 text-navy" />
+                    <h3 className="font-semibold text-navy">Penjualan per Produk</h3>
+                  </div>
+                  {chartData.salesPerProduct.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={240}>
+                      <BarChart data={chartData.salesPerProduct} margin={{ top: 5, right: 20, left: 20, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                        <XAxis dataKey="jenis" style={{ fontSize: '11px' }} tick={{ fill: '#6b7280' }} />
+                        <YAxis style={{ fontSize: '11px' }} tick={{ fill: '#6b7280' }} tickFormatter={(v) => `${(v / 1000000).toFixed(0)}jt`} />
+                        <Tooltip formatter={(v) => formatCurrency(v)} contentStyle={{ fontSize: '12px', borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
+                        <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
+                        <Bar dataKey="total" fill={CHART_COLORS.navy} name="Total Penjualan" radius={[6, 6, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  ) : <div className="h-[240px] flex items-center justify-center text-gray-400 text-sm"><div className="text-center"><BarChart3 className="w-12 h-12 mx-auto mb-2 text-gray-300" /><p>Belum ada data penjualan</p></div></div>}
+                </div>
+
+                <div className="bg-white rounded-lg shadow-sm p-4">
+                  <div className="flex items-center gap-2 mb-4">
+                    <PieChartIcon className="w-5 h-5 text-navy" />
+                    <h3 className="font-semibold text-navy">Metode Pembayaran</h3>
+                  </div>
+                  {chartData.metodePembayaran.length > 0 ? (
+                    <ResponsiveContainer width="100%" height={240}>
+                      <PieChart>
+                        <Pie data={chartData.metodePembayaran} dataKey="total" nameKey="metode" cx="50%" cy="50%" outerRadius={75} label={({ metode, percent }) => `${metode} ${(percent * 100).toFixed(0)}%`} labelStyle={{ fontSize: '11px', fontWeight: '600' }}>
+                          {chartData.metodePembayaran.map((entry, index) => {
+                            const colors = [CHART_COLORS.navy, CHART_COLORS.yellow, CHART_COLORS.teal, CHART_COLORS.orange];
+                            return <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />;
+                          })}
+                        </Pie>
+                        <Tooltip formatter={(v) => formatCurrency(v)} contentStyle={{ fontSize: '12px', borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  ) : <div className="h-[240px] flex items-center justify-center text-gray-400 text-sm"><div className="text-center"><PieChartIcon className="w-12 h-12 mx-auto mb-2 text-gray-300" /><p>Belum ada data pembayaran</p></div></div>}
+                </div>
+
+                {/* STATS */}
+                <div className="bg-white rounded-lg shadow-sm p-4">
+                  <div className="flex items-center gap-2 mb-4">
+                    <TrendingUp className="w-5 h-5 text-navy" />
+                    <h3 className="font-semibold text-navy">Statistik Produk</h3>
+                  </div>
+                  <div className="space-y-2.5">
+                    {[
+                      { label: 'Total Berat Bersih',   value: `${formatNumber(stats.totalBeratBersih)} gram` },
+                      { label: 'Berat Terjual',         value: `${formatNumber(stats.totalBeratTerjual)} gram` },
+                      { label: 'Stok Tersedia',         value: `${formatNumber(stats.totalStokTersedia)} gram` },
+                      { label: 'Persentase Terjual',    value: `${formatPercent(stats.persenTerjual)}%` },
+                      { label: 'Rata-rata Susut',       value: `${formatPercent(stats.avgPersenSusut)}%` }
+                    ].map((item, i) => (
+                      <div key={i} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg border border-gray-200">
+                        <span className="text-sm text-gray-600">{item.label}</span>
+                        <span className="text-sm font-bold text-navy">{item.value}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </main>
       </div>
     </div>
