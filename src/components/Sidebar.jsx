@@ -1,24 +1,18 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { 
-  Package, ShoppingCart, FileText, Users, Menu, X, LogOut, 
-  LayoutDashboard, UserCircle, ChevronRight
-} from "lucide-react";
+import { Menu, X, LogOut, ChevronRight } from "lucide-react";
+import { RiDashboard3Line, RiUserSettingsLine, RiArchiveStackLine, RiHandCoinLine, RiFileChartLine, RiAccountCircleLine } from "react-icons/ri";
 import logoWaletJaya from "../assets/logowaletjaya.png";
 
 export default function Sidebar({ user: userProp }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [fotoProfil, setFotoProfil] = useState(null);
+  const [fotoProfil, setFotoProfil] = useState(() => localStorage.getItem("fotoProfil") || null);
 
   useEffect(() => {
     const storedFoto = localStorage.getItem("fotoProfil");
-    if (userProp?.fotoProfil !== undefined) {
-      setFotoProfil(userProp.fotoProfil);
-    } else if (storedFoto) {
-      setFotoProfil(storedFoto);
-    }
+    setFotoProfil(storedFoto || userProp?.fotoProfil || null);
   }, [userProp?.fotoProfil]);
 
   useEffect(() => {
@@ -53,12 +47,12 @@ export default function Sidebar({ user: userProp }) {
   };
 
   const menus = [
-    { id: "dashboard", label: "Dashboard",           icon: LayoutDashboard, path: "/dashboard" },
-    { id: "pengguna",  label: "Kelola Pengguna",     icon: Users,           path: "/kelola-pengguna",     roles: ["owner"] },
-    { id: "produk",    label: "Kelola Produk",       icon: Package,         path: "/kelola-produk",       roles: ["owner"] },
-    { id: "transaksi", label: "Transaksi Penjualan", icon: ShoppingCart,    path: "/transaksi-penjualan", roles: ["owner", "admin"] },
-    { id: "laporan",   label: "Laporan Penjualan",   icon: FileText,        path: "/laporan-penjualan",   roles: ["owner", "admin"] },
-    { id: "profil",    label: "Kelola Profil",       icon: UserCircle,      path: "/kelola-profil",       roles: ["owner", "admin"] },
+    { id: "dashboard", label: "Dashboard",           icon: RiDashboard3Line,    path: "/dashboard" },
+    { id: "pengguna",  label: "Kelola Pengguna",     icon: RiUserSettingsLine,  path: "/kelola-pengguna",     roles: ["owner"] },
+    { id: "produk",    label: "Kelola Produk",       icon: RiArchiveStackLine,  path: "/kelola-produk",       roles: ["owner"] },
+    { id: "transaksi", label: "Transaksi Penjualan", icon: RiHandCoinLine,      path: "/transaksi-penjualan", roles: ["owner", "admin"] },
+    { id: "laporan",   label: "Laporan Penjualan",   icon: RiFileChartLine,     path: "/laporan-penjualan",   roles: ["owner", "admin"] },
+    { id: "profil",    label: "Kelola Profil",       icon: RiAccountCircleLine, path: "/kelola-profil",       roles: ["owner", "admin"] },
   ];
 
   const handleMenuClick = (menu) => {
@@ -84,7 +78,7 @@ export default function Sidebar({ user: userProp }) {
           />
           <div>
             <p className="font-bold text-sm leading-tight">Walet Jaya</p>
-            <p className="text-[9px] text-white/40 leading-tight">Sistem Manajemen</p>
+            <p className="text-[9px] text-white/40 leading-tight">Sistem Manajemen Penjualan</p>
           </div>
         </div>
 
@@ -132,7 +126,7 @@ export default function Sidebar({ user: userProp }) {
                       : "text-white/60 hover:text-white hover:bg-white/8"
                   }`}
                 >
-                  <Icon className="w-3.5 h-3.5 flex-shrink-0" />
+                  <Icon className="w-4 h-4 flex-shrink-0" />
                   <span>{menu.label}</span>
                 </button>
               );

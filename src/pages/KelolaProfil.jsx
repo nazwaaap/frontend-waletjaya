@@ -49,11 +49,18 @@ export default function KelolaProfil() {
       });
       const data = await res.json();
       if (res.ok) {
+        const foto = data.data.fotoProfil || null;
         setProfilForm({
           nama: data.data.name || data.data.nama || "",
           email: data.data.email || "",
-          fotoProfil: data.data.fotoProfil || null,
+          fotoProfil: foto,
         });
+       
+        if (foto) {
+          localStorage.setItem("fotoProfil", foto);
+        } else {
+          localStorage.removeItem("fotoProfil");
+        }
       }
     } catch (err) {
       console.error("Gagal memuat profil:", err);

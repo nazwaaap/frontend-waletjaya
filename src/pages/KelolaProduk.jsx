@@ -365,7 +365,7 @@ export default function KelolaProduk() {
                         <div className="space-y-2 mb-3 text-sm">
                           <div className="flex justify-between">
                             <span className="text-gray-600">Modal/Gram:</span>
-                            <span className="font-semibold text-green-700">{formatCurrency(product.modalPerGram)}</span>
+                            <span className="font-semibold text-gray-700">{formatCurrency(product.modalPerGram)}</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-gray-600">Stok Tersedia:</span>
@@ -376,23 +376,23 @@ export default function KelolaProduk() {
                             <span className="font-medium">{product.beratBersihGram} gram</span>
                           </div>
                           {product.beratSusutGram > 0 && (
-                            <div className="flex justify-between items-center bg-orange-50 -mx-2 px-2 py-1 rounded">
+                            <div className="flex justify-between items-center -mx-2 px-2 py-1 rounded">
                               <span className="text-gray-600 flex items-center gap-1">
-                                <TrendingDown className="w-3 h-3 text-orange-600" />
+                                <TrendingDown className="w-3 h-3 text-gray-700 " />
                                 Susut:
                               </span>
-                              <span className="font-semibold text-orange-700">
+                              <span className="font-semibold text-gray-700">
                                 {product.beratSusutGram} gram ({product.persenSusut?.toFixed(1)}%)
                               </span>
                             </div>
                           )}
-                          <div className="flex justify-between bg-blue-50 -mx-2 px-2 py-1 rounded">
+                          <div className="flex justify-between -mx-2 px-2 py-1 rounded">
                             <span className="text-gray-600">Total Modal:</span>
-                            <span className="font-bold text-blue-700">{formatCurrency(product.totalModalProduk)}</span>
+                            <span className="font-bold text-gray-700 ">{formatCurrency(product.totalModalProduk)}</span>
                           </div>
-                          <div className="flex justify-between bg-orange-50 -mx-2 px-2 py-1 rounded">
+                          <div className="flex justify-between -mx-2 px-2 py-1 rounded">
                             <span className="text-gray-600">Ongkos:</span>
-                            <span className={`font-semibold ${product.ongkosTotal > 0 ? "text-orange-600" : "text-gray-400"}`}>
+                            <span className={`font-semibold ${product.ongkosTotal > 0 ? "text-gray-700 " : "text-gray-400"}`}>
                               {product.ongkosTotal > 0 ? formatCurrency(product.ongkosTotal) : "-"}
                             </span>
                           </div>

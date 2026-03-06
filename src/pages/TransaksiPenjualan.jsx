@@ -321,90 +321,160 @@ export default function TransaksiPenjualan() {
                   </p>
                 </div>
               ) : (
-                <div className="w-full">
-                  <table className="w-full text-xs">
-                    <thead>
-                      <tr className="bg-navy text-white">
-                        <th className="px-3 py-2.5 text-center" style={{width: "3%"}}>No</th>
-                        <th className="px-3 py-2.5 text-left" style={{width: "10%"}}>Tanggal</th>
-                        <th className="px-3 py-2.5 text-left" style={{width: "10%"}}>Pembeli</th>
-                        <th className="px-3 py-2.5 text-left" style={{width: "8%"}}>Produk</th>
-                        <th className="px-3 py-2.5 text-left" style={{width: "6%"}}>Berat</th>
-                        <th className="px-3 py-2.5 text-right" style={{width: "11%"}}>Modal</th>
-                        <th className="px-3 py-2.5 text-right" style={{width: "11%"}}>Jual</th>
-                        <th className="px-3 py-2.5 text-right" style={{width: "10%"}}>Laba</th>
-                        <th className="px-3 py-2.5 text-center" style={{width: "7%"}}>Metode</th>
-                        <th className="px-3 py-2.5 text-center" style={{width: "4%"}}>Nota</th>
-                        <th className="px-3 py-2.5 text-center" style={{width: "8%"}}>Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100">
-                      {filteredTransactions.map((tx, i) => (
-                        <tr key={tx._id} className={i % 2 !== 0 ? "bg-gray-50" : "bg-white"}>
-                          <td className="px-3 py-2.5 text-center text-gray-400">{i + 1}</td>
-                          <td className="px-3 py-2.5 text-gray-700">{formatDate(tx.tanggalTransaksi)}</td>
-                          <td className="px-3 py-2.5">
-                            <div className="font-medium text-gray-700 truncate">{tx.namaPembeli}</div>
-                            {tx.kontakPembeli && (
-                              <div className="text-[8px] text-gray-500 truncate">{tx.kontakPembeli}</div>
-                            )}
-                          </td>
-                          <td className="px-3 py-2.5">
-                            <span className="font-medium text-gray-700 truncate">
-                              {(tx.jenisProduk || tx.productSnapshot?.jenis || "-").replace('Mangkok Original', 'Mangkok')}
-                            </span>
-                          </td>
-                          <td className="px-3 py-2.5">
-                            <span className="font-medium text-gray-700">{tx.beratTerjualGram}g</span>
-                            <div className="text-[8px] text-gray-500">+{(tx.persenMarkup || 0).toFixed(1)}%</div>
-                          </td>
-                          <td className="px-3 py-2.5 font-medium text-gray-700 text-right">{formatCurrency(tx.totalModalTransaksi)}</td>
-                          <td className="px-3 py-2.5 font-medium text-gray-700 text-right">{formatCurrency(tx.totalHargaJual)}</td>
-                          <td className="px-3 py-2.5 text-right">
-                            <div className="font-medium text-gray-700">{formatCurrency(tx.totalLaba)}</div>
-                            <div className="text-[8px] text-gray-500">{(tx.persenLaba || 0).toFixed(1)}%</div>
-                          </td>
-                          <td className="px-3 py-2.5 text-center">
-                            <span className="text-[9px] text-gray-700 truncate">{tx.metodePembayaran === 'Transfer Bank' ? 'TF' : tx.metodePembayaran === 'E-Wallet' ? 'EW' : 'Tunai'}</span>
-                          </td>
-                          <td className="px-3 py-2.5 text-center">
-                            {tx.fotoNota ? (
-                              <button
-                                onClick={() => setViewImage(tx.fotoNota)}
-                                className="p-0.5 bg-blue-100 text-gray-700 rounded hover:bg-blue-200 transition-colors"
-                                title="Lihat Nota"
-                              >
-                                <ImageIcon className="w-3 h-3" />
-                              </button>
-                            ) : (
-                              <span className="text-[9px] text-gray-400">-</span>
-                            )}
-                          </td>
-                          <td className="px-3 py-2.5">
-                            <div className="flex justify-center gap-1">
-                              <button
-                                onClick={() => navigate(`/edit-transaksi/${tx._id}`)}
-                                className="p-1 text-[9px] bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors"
-                                title="Edit"
-                              >
-                                <Edit className="w-3 h-3" />
-                              </button>
-                              {userRole === "owner" && (
-                                <button
-                                  onClick={() => navigate(`/hapus-transaksi/${tx._id}`)}
-                                  className="p-1 text-[9px] bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-                                  title="Hapus"
-                                >
-                                  <Trash2 className="w-3 h-3" />
-                                </button>
-                              )}
-                            </div>
-                          </td>
+                <>
+        
+                  <div className="hidden lg:block w-full overflow-x-auto">
+                    <table className="w-full text-xs">
+                      <thead>
+                        <tr className="bg-navy text-white">
+                          <th className="px-3 py-2.5 text-center" style={{width: "3%"}}>No</th>
+                          <th className="px-3 py-2.5 text-left" style={{width: "10%"}}>Tanggal</th>
+                          <th className="px-3 py-2.5 text-left" style={{width: "10%"}}>Pembeli</th>
+                          <th className="px-3 py-2.5 text-left" style={{width: "8%"}}>Produk</th>
+                          <th className="px-3 py-2.5 text-left" style={{width: "6%"}}>Berat</th>
+                          <th className="px-3 py-2.5 text-right" style={{width: "11%"}}>Modal</th>
+                          <th className="px-3 py-2.5 text-right" style={{width: "11%"}}>Jual</th>
+                          <th className="px-3 py-2.5 text-right" style={{width: "10%"}}>Laba</th>
+                          <th className="px-3 py-2.5 text-center" style={{width: "7%"}}>Metode</th>
+                          <th className="px-3 py-2.5 text-center" style={{width: "4%"}}>Nota</th>
+                          <th className="px-3 py-2.5 text-center" style={{width: "8%"}}>Aksi</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100">
+                        {filteredTransactions.map((tx, i) => (
+                          <tr key={tx._id} className={i % 2 !== 0 ? "bg-gray-50" : "bg-white"}>
+                            <td className="px-3 py-2.5 text-center text-gray-400">{i + 1}</td>
+                            <td className="px-3 py-2.5 text-gray-700">{formatDate(tx.tanggalTransaksi)}</td>
+                            <td className="px-3 py-2.5">
+                              <div className="font-medium text-gray-700 truncate">{tx.namaPembeli}</div>
+                              {tx.kontakPembeli && (
+                                <div className="text-[8px] text-gray-500 truncate">{tx.kontakPembeli}</div>
+                              )}
+                            </td>
+                            <td className="px-3 py-2.5">
+                              <span className="font-medium text-gray-700 truncate">
+                                {(tx.jenisProduk || tx.productSnapshot?.jenis || "-").replace('Mangkok Original', 'Mangkok')}
+                              </span>
+                            </td>
+                            <td className="px-3 py-2.5">
+                              <span className="font-medium text-gray-700">{tx.beratTerjualGram}g</span>
+                              <div className="text-[8px] text-gray-500">+{(tx.persenMarkup || 0).toFixed(1)}%</div>
+                            </td>
+                            <td className="px-3 py-2.5 font-medium text-gray-700 text-right">{formatCurrency(tx.totalModalTransaksi)}</td>
+                            <td className="px-3 py-2.5 font-medium text-gray-700 text-right">{formatCurrency(tx.totalHargaJual)}</td>
+                            <td className="px-3 py-2.5 text-right">
+                              <div className="font-medium text-gray-700">{formatCurrency(tx.totalLaba)}</div>
+                              <div className="text-[8px] text-gray-500">{(tx.persenLaba || 0).toFixed(1)}%</div>
+                            </td>
+                            <td className="px-3 py-2.5 text-center">
+                              <span className="text-[9px] text-gray-700 truncate">{tx.metodePembayaran === 'Transfer Bank' ? 'TF' : tx.metodePembayaran === 'E-Wallet' ? 'EW' : 'Tunai'}</span>
+                            </td>
+                            <td className="px-3 py-2.5 text-center">
+                              {tx.fotoNota ? (
+                                <button
+                                  onClick={() => setViewImage(tx.fotoNota)}
+                                  className="p-0.5 bg-blue-100 text-gray-700 rounded hover:bg-blue-200 transition-colors"
+                                  title="Lihat Nota"
+                                >
+                                  <ImageIcon className="w-3 h-3" />
+                                </button>
+                              ) : (
+                                <span className="text-[9px] text-gray-400">-</span>
+                              )}
+                            </td>
+                            <td className="px-3 py-2.5">
+                              <div className="flex justify-center gap-1">
+                                <button
+                                  onClick={() => navigate(`/edit-transaksi/${tx._id}`)}
+                                  className="p-1 text-[9px] bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors"
+                                  title="Edit"
+                                >
+                                  <Edit className="w-3 h-3" />
+                                </button>
+                                {userRole === "owner" && (
+                                  <button
+                                    onClick={() => navigate(`/hapus-transaksi/${tx._id}`)}
+                                    className="p-1 text-[9px] bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                                    title="Hapus"
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                  </button>
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+        
+                  <div className="lg:hidden divide-y">
+                    {filteredTransactions.map((tx, i) => (
+                      <div key={tx._id} className="p-4 hover:bg-gray-50 transition-colors">
+                        <div className="flex items-start justify-between mb-3">
+                          <div>
+                            <h3 className="font-semibold text-navy">{tx.namaPembeli}</h3>
+                            <p className="text-xs text-gray-500">#{i + 1} • {formatDate(tx.tanggalTransaksi)}</p>
+                            {tx.kontakPembeli && <p className="text-[10px] text-gray-400">{tx.kontakPembeli}</p>}
+                          </div>
+                          <span className="text-[10px] font-semibold text-navy bg-navy/10 px-2 py-0.5 rounded-full">
+                            {(tx.jenisProduk || tx.productSnapshot?.jenis || "-").replace('Mangkok Original', 'Mangkok')}
+                          </span>
+                        </div>
+
+                        <div className="space-y-1.5 mb-3 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-gray-500 text-xs">Berat</span>
+                            <span className="font-medium text-xs">{tx.beratTerjualGram}g <span className="text-gray-400 text-[10px]">+{(tx.persenMarkup || 0).toFixed(1)}%</span></span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-500 text-xs">Modal</span>
+                            <span className="font-medium text-xs">{formatCurrency(tx.totalModalTransaksi)}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-500 text-xs">Jual</span>
+                            <span className="font-semibold text-xs">{formatCurrency(tx.totalHargaJual)}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-500 text-xs">Laba</span>
+                            <span className="font-bold text-xs text-navy">{formatCurrency(tx.totalLaba)} <span className="text-gray-400 text-[10px]">{(tx.persenLaba || 0).toFixed(1)}%</span></span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-500 text-xs">Metode</span>
+                            <span className="text-xs">{tx.metodePembayaran}</span>
+                          </div>
+                        </div>
+
+                        <div className="flex gap-2">
+                          {tx.fotoNota && (
+                            <button
+                              onClick={() => setViewImage(tx.fotoNota)}
+                              className="flex items-center justify-center gap-1.5 px-3 py-2 bg-blue-50 text-blue-700 border border-blue-200 rounded-md text-xs font-medium hover:bg-blue-100 transition-colors"
+                            >
+                              <ImageIcon className="w-3.5 h-3.5" />
+                              <span>Nota</span>
+                            </button>
+                          )}
+                          <button
+                            onClick={() => navigate(`/edit-transaksi/${tx._id}`)}
+                            className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors text-sm font-medium"
+                          >
+                            <Edit className="w-4 h-4" /><span>Edit</span>
+                          </button>
+                          {userRole === "owner" && (
+                            <button
+                              onClick={() => navigate(`/hapus-transaksi/${tx._id}`)}
+                              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors text-sm font-medium"
+                            >
+                              <Trash2 className="w-4 h-4" /><span>Hapus</span>
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
               )}
             </div>
           </div>

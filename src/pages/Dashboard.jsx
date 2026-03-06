@@ -25,7 +25,7 @@ export default function Dashboard() {
   useEffect(() => {
     const userRole = localStorage.getItem("userRole");
     const userName = localStorage.getItem("userName");
-    setUser({ role: userRole, name: userName });
+    setUser({ role: userRole, name: userName, fotoProfil: localStorage.getItem("fotoProfil") });
     fetchDashboardData();
   }, []);
 
@@ -85,7 +85,7 @@ export default function Dashboard() {
       });
     } catch (err) {
       console.error("Error fetching dashboard data:", err);
-      setError("Tidak dapat terhubung ke server. Periksa koneksi internet Anda."); // ← SET ERROR
+      setError("Tidak dapat terhubung ke server. Periksa koneksi internet Anda."); 
     } finally {
       setLoading(false);
     }
@@ -160,7 +160,7 @@ export default function Dashboard() {
                 </div>
               )}
 
-              {/* SUMMARY CARDS */}
+
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
                 <div className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow">
                   <div className="flex items-center justify-between mb-2">
@@ -207,9 +207,7 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* CHARTS */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-  
                 <div className="bg-white rounded-lg shadow-sm p-4">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-2">
@@ -266,7 +264,6 @@ export default function Dashboard() {
                   ) : <div className="h-[240px] flex items-center justify-center text-gray-400 text-sm"><div className="text-center"><PieChartIcon className="w-12 h-12 mx-auto mb-2 text-gray-300" /><p>Belum ada data pembayaran</p></div></div>}
                 </div>
 
-                {/* STATS */}
                 <div className="bg-white rounded-lg shadow-sm p-4">
                   <div className="flex items-center gap-2 mb-4">
                     <TrendingUp className="w-5 h-5 text-navy" />
