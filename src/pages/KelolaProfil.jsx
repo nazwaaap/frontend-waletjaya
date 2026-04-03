@@ -44,6 +44,8 @@ export default function KelolaProfil() {
   const fetchProfil = async () => {
     try {
       const token = localStorage.getItem("token");
+      // const res = await fetch("http://localhost:5000/api/users/profile", {
+      const BASE_URL = import.meta.env.VITE_API_URL;
       const res = await fetch(`${BASE_URL}/api/users/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -227,19 +229,34 @@ export default function KelolaProfil() {
       return;
     }
 
+    // try {
+    //   const token = localStorage.getItem("token");
+    //   const res = await fetch("http://localhost:5000/api/users/change-password", {
+        
+    //     method: "PUT",
+    //     headers: {
+    //       Authorization: `Bearer ${token}`,
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //       passwordLama: passwordForm.passwordLama,
+    //       passwordBaru: passwordForm.passwordBaru,
+    //     }),
+    //   });
+
     try {
-      const token = localStorage.getItem("token");
-      const res = await fetch(`${BASE_URL}/api/users/change-password`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          passwordLama: passwordForm.passwordLama,
-          passwordBaru: passwordForm.passwordBaru,
-        }),
-      });
+    const token = localStorage.getItem("token");
+    const res = await fetch(`${BASE_URL}/api/users/change-password`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        passwordLama: passwordForm.passwordLama,
+        passwordBaru: passwordForm.passwordBaru,
+      }),
+    });
 
       const data = await res.json();
       if (!res.ok) {
