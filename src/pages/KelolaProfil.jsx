@@ -44,7 +44,7 @@ export default function KelolaProfil() {
   const fetchProfil = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/api/users/profile", {
+      const res = await fetch(`${BASE_URL}/api/users/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -166,7 +166,8 @@ export default function KelolaProfil() {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/api/users/profile", {
+      const BASE_URL = import.meta.env.VITE_API_URL;
+      const res = await fetch(`${BASE_URL}/api/users/profile`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -228,7 +229,7 @@ export default function KelolaProfil() {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/api/users/change-password", {
+      const res = await fetch(`${BASE_URL}/api/users/change-password`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,

@@ -10,6 +10,7 @@ export default function HapusPengguna() {
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
   const [error, setError] = useState("");
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   const currentUser = {
     role: localStorage.getItem("userRole"),
@@ -23,7 +24,7 @@ export default function HapusPengguna() {
   const fetchUser = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:5000/api/users/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/users/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json"
@@ -53,7 +54,7 @@ export default function HapusPengguna() {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:5000/api/users/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/users/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

@@ -34,10 +34,12 @@ export default function TambahTransaksi() {
     fetchProducts();
   }, []);
 
+  const BASE_URL = import.meta.env.VITE_API_URL;
+
   const fetchProducts = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/api/products?status=Tersedia", {
+      const res = await fetch(`${BASE_URL}/api/products?status=Tersedia`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -109,7 +111,7 @@ export default function TambahTransaksi() {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/api/transactions", {
+      const res = await fetch(`${BASE_URL}/api/transactions`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

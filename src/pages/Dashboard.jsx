@@ -32,11 +32,12 @@ export default function Dashboard() {
   const fetchDashboardData = async () => {
     setLoading(true);
     setError(""); 
+    const BASE_URL = import.meta.env.VITE_API_URL;
     try {
       const token = localStorage.getItem("token");
       const [productRes, transactionRes] = await Promise.all([
-        fetch("http://localhost:5000/api/products/stats/summary", { headers: { Authorization: `Bearer ${token}` }}),
-        fetch("http://localhost:5000/api/transactions/stats/summary", { headers: { Authorization: `Bearer ${token}` }})
+        fetch(`${BASE_URL}/api/products/stats/summary`, { headers: { Authorization: `Bearer ${token}` }}),
+        fetch(`${BASE_URL}/api/transactions/stats/summary`, { headers: { Authorization: `Bearer ${token}` }})
       ]);
 
       if (!productRes.ok || !transactionRes.ok) {

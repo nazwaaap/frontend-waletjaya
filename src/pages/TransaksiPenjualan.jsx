@@ -36,7 +36,8 @@ export default function TransaksiPenjualan() {
     setError(""); 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://localhost:5000/api/transactions", {
+      const BASE_URL = import.meta.env.VITE_API_URL;
+      const res = await fetch(`${BASE_URL}/api/transactions`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",

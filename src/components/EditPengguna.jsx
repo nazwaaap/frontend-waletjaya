@@ -26,10 +26,12 @@ export default function EditPengguna() {
     fetchUser();
   }, [id]);
 
+  const BASE_URL = import.meta.env.VITE_API_URL;
+
   const fetchUser = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:5000/api/users/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/users/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json"
@@ -85,7 +87,7 @@ export default function EditPengguna() {
         updateData.password = formData.password;
       }
 
-      const res = await fetch(`http://localhost:5000/api/users/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/users/${id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,

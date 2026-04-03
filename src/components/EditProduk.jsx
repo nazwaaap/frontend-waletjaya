@@ -38,10 +38,12 @@ export default function EditProduk() {
     fetchProduct();
   }, [id]);
 
+  const BASE_URL = import.meta.env.VITE_API_URL;
+
   const fetchProduct = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:5000/api/products/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/products/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json"
@@ -104,7 +106,7 @@ export default function EditProduk() {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:5000/api/products/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/products/${id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,

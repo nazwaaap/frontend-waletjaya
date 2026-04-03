@@ -11,6 +11,7 @@ export default function HapusProduk() {
   const [loadingData, setLoadingData] = useState(true);
   const [error, setError] = useState("");
   const [user, setUser] = useState(null);  
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const role = localStorage.getItem("userRole");
@@ -22,7 +23,7 @@ export default function HapusProduk() {
   const fetchProduct = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:5000/api/products/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/products/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json"
@@ -46,7 +47,7 @@ export default function HapusProduk() {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:5000/api/products/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/products/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

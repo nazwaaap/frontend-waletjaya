@@ -7,6 +7,7 @@ export default function EditTransaksi() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [transaction, setTransaction] = useState(null);
+  const BASE_URL = import.meta.env.VITE_API_URL;
   const [formData, setFormData] = useState({
     tanggalTransaksi: "",
     namaPembeli: "",
@@ -46,7 +47,7 @@ export default function EditTransaksi() {
   const fetchTransaction = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:5000/api/transactions/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/transactions/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json"
@@ -121,7 +122,7 @@ export default function EditTransaksi() {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:5000/api/transactions/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/transactions/${id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,

@@ -145,7 +145,8 @@ export default function LaporanPenjualan() {
     setError("");
     try {
       const token = localStorage.getItem("token");
-      let url = `http://localhost:5000/api/laporan/laporan?startDate=${startDate}&endDate=${endDate}&_t=${Date.now()}`;
+      const BASE_URL = import.meta.env.VITE_API_URL;
+      let url = `${BASE_URL}/api/laporan/laporan?startDate=${startDate}&endDate=${endDate}&_t=${Date.now()}`;
       if (filterJenis) url += `&jenisProduk=${encodeURIComponent(filterJenis)}`;
       if (filterMetode) url += `&metodePembayaran=${encodeURIComponent(filterMetode)}`;
       const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` }, cache: 'no-cache' });
