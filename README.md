@@ -11,6 +11,7 @@ Aplikasi web untuk manajemen penjualan sarang burung walet. Dibangun dengan MERN
 - Tailwind CSS
 - Recharts (grafik & chart)
 - Lucide React (ikon)
+- React Icons (ikon sidebar)
 - jsPDF + jspdf-autotable (export PDF)
 - SheetJS / XLSX (export Excel)
 
@@ -163,6 +164,4 @@ website-waletjaya/
 | Kelola Pengguna     | ✅    | ❌    |
 | Kelola Profil       | ✅    | ✅    |
 
----
-
-Dibuat oleh nazwaaap
+made by nazwaaap

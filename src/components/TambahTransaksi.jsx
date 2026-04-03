@@ -359,43 +359,60 @@ export default function TambahTransaksi() {
                 </div>
 
                 {selectedProduct && beratTerjual > 0 && hargaJual > 0 && (
-                  <div className="bg-yellow-50 border border-gray-300 rounded-lg p-4 space-y-3">
-                    <div className="flex items-center gap-2 mb-2">
-                      <TrendingUp className="w-5 h-5 text-gray-700" />
-                      <h4 className="font-medium text-gray-900 text-base">Preview Kalkulasi Transaksi</h4>
+                  userRole === "owner" ? (
+                    <div className="bg-yellow-50 border border-gray-300 rounded-lg p-4 space-y-3">
+                      <div className="flex items-center gap-2 mb-2">
+                        <TrendingUp className="w-5 h-5 text-gray-700" />
+                        <h4 className="font-medium text-gray-900 text-base">Preview Kalkulasi Transaksi</h4>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3 text-sm">
+                        <div className="bg-white rounded-lg p-3 border border-gray-300">
+                          <p className="text-xs text-gray-600 mb-1">Modal/gram</p>
+                          <p className="font-bold text-navy">Rp {formatCurrency(modalPerGram)}</p>
+                        </div>
+                        <div className="bg-white rounded-lg p-3 border border-gray-300">
+                          <p className="text-xs text-gray-600 mb-1">Harga Jual/gram</p>
+                          <p className="font-bold text-navy">Rp {formatCurrency(hargaJual)}</p>
+                          <p className="text-xs text-gray-600 mt-0.5">Markup: {persenMarkup.toFixed(1)}%</p>
+                        </div>
+                      </div>
+                      <div className="pt-3 border-t border-gray-300 space-y-2">
+                        <div className="flex justify-between items-center text-sm">
+                          <span className="text-gray-700 font-medium">Total Modal:</span>
+                          <span className="font-medium text-gray-900">Rp {formatCurrency(totalModal)}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-sm">
+                          <span className="text-gray-700 font-medium">Total Penjualan:</span>
+                          <span className="font-medium text-gray-900">Rp {formatCurrency(totalPenjualan)}</span>
+                        </div>
+                        <div className="flex justify-between items-center pt-2 border-t border-gray-300">
+                          <span className="text-navy font-medium">Laba Bersih:</span>
+                          <span className="font-bold text-navy text-xl">Rp {formatCurrency(totalLaba)}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-sm bg-yellow-100 rounded px-2 py-1">
+                          <span className="text-gray-700 font-medium">Margin Laba:</span>
+                          <span className="font-medium text-navy">{persenLaba.toFixed(2)}%</span>
+                        </div>
+                      </div>
                     </div>
-                    
-                    <div className="grid grid-cols-2 gap-3 text-sm">
-                      <div className="bg-white rounded-lg p-3 border border-gray-300">
-                        <p className="text-xs text-gray-600 mb-1">Modal/gram</p>
-                        <p className="font-bold text-navy">Rp {formatCurrency(modalPerGram)}</p>
+                  ) : (
+                    <div className="bg-yellow-50 border border-gray-300 rounded-lg p-4 space-y-3">
+                      <div className="flex items-center gap-2 mb-2">
+                        <TrendingUp className="w-5 h-5 text-gray-700" />
+                        <h4 className="font-medium text-gray-900 text-base">Preview Transaksi</h4>
                       </div>
-                      <div className="bg-white rounded-lg p-3 border border-gray-300">
-                        <p className="text-xs text-gray-600 mb-1">Harga Jual/gram</p>
-                        <p className="font-bold text-navy">Rp {formatCurrency(hargaJual)}</p>
-                        <p className="text-xs text-gray-600 mt-0.5">Markup: {persenMarkup.toFixed(1)}%</p>
-                      </div>
-                    </div>
-
-                    <div className="pt-3 border-t border-gray-300 space-y-2">
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-gray-700 font-medium">Total Modal:</span>
-                        <span className="font-medium text-gray-900">Rp {formatCurrency(totalModal)}</span>
-                      </div>
-                      <div className="flex justify-between items-center text-sm">
-                        <span className="text-gray-700 font-medium">Total Penjualan:</span>
-                        <span className="font-medium text-gray-900">Rp {formatCurrency(totalPenjualan)}</span>
-                      </div>
-                      <div className="flex justify-between items-center pt-2 border-t border-gray-300">
-                        <span className="text-navy font-medium">Laba Bersih:</span>
-                        <span className="font-bold text-navy text-xl">Rp {formatCurrency(totalLaba)}</span>
-                      </div>
-                      <div className="flex justify-between items-center text-sm bg-yellow-100 rounded px-2 py-1">
-                        <span className="text-gray-700 font-medium">Margin Laba:</span>
-                        <span className="font-medium text-navy">{persenLaba.toFixed(2)}%</span>
+                      <div className="grid grid-cols-2 gap-3 text-sm">
+                        <div className="bg-white rounded-lg p-3 border border-gray-300">
+                          <p className="text-xs text-gray-600 mb-1">Harga Jual/gram</p>
+                          <p className="font-bold text-navy">Rp {formatCurrency(hargaJual)}</p>
+                        </div>
+                        <div className="bg-white rounded-lg p-3 border border-gray-300">
+                          <p className="text-xs text-gray-600 mb-1">Total Penjualan</p>
+                          <p className="font-bold text-navy">Rp {formatCurrency(totalPenjualan)}</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )
                 )}
 
                 <div>
